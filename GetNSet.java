@@ -27,7 +27,7 @@ class GetNSet implements State {
 
 	public byte[] current() {
 		byte[] convert = new byte[value.length()];
-		for(int i =0 ; i < value.length(); i--)
+		for(int i =0 ; i < value.length(); i++)
 			convert[i] = (byte) value.get(i);
 		return convert;
 	}

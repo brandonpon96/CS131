@@ -5,16 +5,16 @@ class UnsafeMemory {
 	try {
 	    int nThreads = parseInt (args[1], 1, Integer.MAX_VALUE);
 	    int nTransitions = parseInt (args[2], 0, Integer.MAX_VALUE);
-	    byte maxval = (byte) parseInt (args[3], 0, 127);
-	    byte[] value = new byte[args.length - 4];
-	    for (int i = 4; i < args.length; i++)
-		value[i - 4] = (byte) parseInt (args[i], 0, maxval);
-	    byte[] stateArg = value.clone();
-	    // new byte[500];
-	    // for(int i = 0; i < 500; i++){
-	    // 	stateArg[i] =(byte)(i % 127;
-	    // }
+	    byte maxval = (byte) 127;// parseInt (args[3], 0, 127);
+	 //    byte[] value = new byte[args.length - 4];
+	 //    for (int i = 4; i < args.length; i++)
+		// value[i - 4] = (byte) parseInt (args[i], 0, maxval);
 	    
+	    byte[] value = new byte[500];
+	    for(int i = 0; i < 500; i++){
+	    	value[i] =(byte)(i % 127);
+	    }
+	    byte[] stateArg = value.clone();
 	    State s;
 	    if (args[0].equals("Null"))
 		s = new NullState(stateArg, maxval);
