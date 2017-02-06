@@ -10,8 +10,8 @@ class UnsafeMemory {
 	 //    for (int i = 4; i < args.length; i++)
 		// value[i - 4] = (byte) parseInt (args[i], 0, maxval);
 	    
-	    byte[] value = new byte[500];
-	    for(int i = 0; i < 500; i++){
+	    byte[] value = new byte[100];
+	    for(int i = 0; i < 100; i++){
 	    	value[i] =(byte)(i % 127);
 	    }
 	    byte[] stateArg = value.clone();
