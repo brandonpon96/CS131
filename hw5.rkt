@@ -77,19 +77,28 @@
 )
 
 (define (assq-ld obj alistdiff)
-	#t
+	(if (listdiff? alistdiff) (pair? (car alistdiff)) (eq? (car (car (car alistdiff))) obj)
+		(car (car alistdiff))
+	)
 )
 
 (define (list->listdiff list)
-	#f
+	(if (list? list) (listdiff (car list) (cdr list))
+		(error "not a list")
+	)
 )
 
 (define (listdiff->list listdiff)
-	#f
+	(if (listdiff? listdiff) (get_list (car listdiff) (length-ld listdiff))
+		(error "not a listdiff")
+	)
 )
 
 (define (expr-returning listdiff)
-	#t
+	(if (listdiff? listdiff)
+		'(cons ,(listdiff->list listdiff) '())
+		(error "not a listdiff")
+	)
 )
 
 
