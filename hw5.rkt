@@ -76,9 +76,27 @@
 	)
 )
 
+(define (all-pairs ls)
+	(if (and (atom? (car ls)) (atom? (cdr ls))) #t
+		(if (pair? ls) (and (all-pairs (car ls)) (all-pairs (cdr ls)))
+			#f
+		)
+	)
+)
+
+(define (assq-helper obj alistdiff)
+	(if (eq? (car (car (car alistdiff))) '()) #f
+		(if (eq? (car (car (car alistdiff))) obj) 
+			(car (car alistdiff))
+			(assq-ld obj (cons (cdr (car alistdiff)) (cdr alistdiff)))
+		)
+	)
+)
+
 (define (assq-ld obj alistdiff)
-	(if (listdiff? alistdiff) (pair? (car alistdiff)) (eq? (car (car (car alistdiff))) obj)
-		(car (car alistdiff))
+	(if (and (listdiff? alistdiff) (all-pairs (car alistdiff)))
+		(assq-helper obj alistdiff)
+		(error "not a listdiff or not all pairs")
 	)
 )
 
