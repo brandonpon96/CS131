@@ -5,7 +5,7 @@
 (define r '(f g h i j))
 (define t (cons r (cdr (cdr (cdr r)))))
 
-(define (atom? x) (not (or (null? x) (pair? x))))
+(define (atom? x) (or (eq? x '())  (not (or (null? x) (pair? x)))))
 
 ; diff between two list will be empty if they are the same
 (define (null-ld? obj)
@@ -16,8 +16,8 @@
 
 (define (listdiff? obj)
 	; base case is when both lists are the same
-	(or (null-ld? obj)
-		(if (or (atom? obj) (eq?  (car obj) '())) #f
+	(if (null-ld? obj) #t
+		(if (or (atom? obj) (atom? (car obj) )) #f
 			(listdiff? (cons (cdr (car obj)) (cdr obj)))
 		)
 	)
@@ -30,13 +30,13 @@
 )
 
 (define (car-ld listdiff)
-	(if (listdiff? listdiff) (car (car listdiff))
+	(if (and  (listdiff? listdiff) (not (null-ld? listdiff))) (car (car listdiff))
 		(error "listdiff has no elements")
 	)
 )
 
 (define (cdr-ld listdiff)
-	(if (listdiff? listdiff) (cons (cdr (car listdiff)) (cdr listdiff))
+	(if (and  (listdiff? listdiff) (not (null-ld? listdiff))) (cons (cdr (car listdiff)) (cdr listdiff))
 		(error "listdiff has no elements")
 	)
 )
@@ -54,7 +54,10 @@
 )
 
 (define (length-ld listdiff)
-	(- (length_helper (car listdiff) 0) (length_helper (cdr listdiff) 0))
+	(if (listdiff? listdiff)	
+		(- (length_helper (car listdiff) 0) (length_helper (cdr listdiff) 0))
+		(error "not a listdiff")
+	)
 )
 
 ; returns a list from a listdiff
@@ -77,10 +80,12 @@
 )
 
 (define (all-pairs ls)
-	(if (and (atom? (car ls)) (atom? (cdr ls))) #t
-		(if (pair? ls) (and (all-pairs (car ls)) (all-pairs (cdr ls)))
-			#f
-		)
+	(if (not (pair? ls)) #f
+		(if (and (atom? (car ls)) (atom? (cdr ls))) #t
+		(if (atom? (car ls)) (all-pairs (cdr ls))
+		(if (atom? (cdr ls)) (all-pairs (car ls))
+			(and (all-pairs (car ls)) (all-pairs (cdr ls)))
+		)))
 	)
 )
 
@@ -101,20 +106,20 @@
 )
 
 (define (list->listdiff list)
-	(if (list? list) (listdiff (car list) (cdr list))
+	(if (list? list) (apply listdiff (car list) (cdr list))
 		(error "not a list")
 	)
 )
 
 (define (listdiff->list listdiff)
-	(if (listdiff? listdiff) (get_list (car listdiff) (length-ld listdiff))
+	(if (listdiff? listdiff) (get_list (car listdiff) '() (length-ld listdiff))
 		(error "not a listdiff")
 	)
 )
 
 (define (expr-returning listdiff)
 	(if (listdiff? listdiff)
-		'(cons ,(listdiff->list listdiff) '())
+		`(cons ',(listdiff->list listdiff) '())
 		(error "not a listdiff")
 	)
 )
@@ -143,13 +148,13 @@
 (null-ld? d6)                          ;===>  #f
 
 (car-ld d1)                            ;===>  a
-(car-ld d2)                            ;===>  error
-(car-ld d3)                            ;===>  error
+;(car-ld d2)                            ;===>  error
+;(car-ld d3)                            ;===>  error
 (car-ld d6)                            ;===>  (a e i o u . y)
 
 (length-ld d1)                         ;===>  2
 (length-ld d2)                         ;===>  0
-(length-ld d3)                         ;===>  error
+;(length-ld d3)                         ;===>  error
 (length-ld d6)                         ;===>  3
 (length-ld d7)                         ;===>  5
 
