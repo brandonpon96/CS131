@@ -1,3 +1,4 @@
+#lang racket
 
 (define (atom? x) (or (eq? x '())  (not (or (null? x) (pair? x)))))
 
